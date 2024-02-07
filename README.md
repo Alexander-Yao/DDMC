@@ -10,7 +10,7 @@ Abstract: Multiple clustering has gathered significant attention in recent years
 ## Method
 | ![space-1.jpg](teaser.jpg) | 
 |:--:| 
-| ***Overall framework of DDMC**. DDMC trains disentanglement learning and cluster assignment in an EM framework. During the E-step, the disentangled representation is learned through both coarse-grained and fine-grained disentangled representation learning. The learned disentangled representations can be applied to multiple clustering tasks. In the M-step, cluster assignment is optimized, enhancing the cluster-level performance..* |
+| ***Overall framework of DDMC**. DDMC trains disentanglement learning and cluster assignment in an EM framework. During the E-step, the disentangled representation is learned through both coarse-grained and fine-grained disentangled representation learning. The learned disentangled representations can be applied to multiple clustering tasks. In the M-step, cluster assignment is optimized, enhancing the cluster-level performance.* |
 
 
 
