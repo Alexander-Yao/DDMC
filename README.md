@@ -47,9 +47,19 @@ python main.py --dataset cards --lr 0.01 --weight_decay 0.00005
 ## Bibtex
 Please cite our paper if you use this code in your own work:
 
+### ArXiv:
 ```
-
+@misc{yao2024dualdisentangled,
+      title={Dual-disentangled Deep Multiple Clustering}, 
+      author={Jiawei Yao and Juhua Hu},
+      year={2024},
+      eprint={2402.05310},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
-
+### SDM'24:
+```
+```
 ## Acknowledgement
 This research is supported in part by Advata Gift funding. All opinions, findings, conclusions and recommendations in this paper are those of the author and do not necessarily reflect the views of the funding agencies.
