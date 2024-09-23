@@ -246,6 +246,7 @@ class Trainer():
         max_recon_loss *= self.model.num_pixels[0]
         # print(float(max_recon_loss))
         recloss = [max_recon_loss]
+        hsic_loss = 0
         for i in range(self.view_num - 1):
             loss_view = F.binary_cross_entropy(recon_batchs[i+1].view(recon_batchs[i+1].shape[0], -1),
                                                 data[i+1].view(data[i+1].shape[0], -1))
@@ -254,6 +255,8 @@ class Trainer():
             recloss.append(loss_view)
             if max_recon_loss < loss_view:
                 max_recon_loss = loss_view
+            for j in range(i, self.view_num - 1):
+                hsic_loss += self.hsic_loss(recon_batchs[i].view(recon_batchs[i].shape[0], -1), recon_batchs[j].view(recon_batchs[j].shape[0], -1))
         # print(self.num_steps)
         if self.num_steps == 1:
             for i in range(self.view_num):
@@ -265,7 +268,7 @@ class Trainer():
         for i in range(self.view_num):
             countinue_name = 'cont' + str(i+1)
             Loss.append(self._loss_function(data[i], recon_batchs[i], {'cont': latent_dist[countinue_name], 'disc': latent_dist['disc']},
-                                            view=i, max_recon_loss=max_recon_loss, beta=self.beta[i]))
+                                            view=i, max_recon_loss=max_recon_loss, beta=self.beta[i]) + hsic_loss)
         for i in range(self.view_num - 1):
             Loss[i].backward(retain_graph=True)
         Loss[-1].backward()
@@ -464,3 +467,16 @@ class Trainer():
         dists = x_norm - 2 * torch.matmul(x, torch.transpose(centers)) + center_norm  # |x-y|^2 = |x|^2 -2*x*y^T + |y|^2
         losses = torch.min(dists, 1)
         return losses
+
+    def rbf_kernel(self, x, y, sigma):
+        gamma = 1.0 / (2 * sigma ** 2)
+        K = torch.exp(-gamma * torch.cdist(x, y) ** 2)
+        return K
+
+    def hsic_loss(self, x, y, sigma=1.0):
+        m = x.size(0)
+        H = torch.eye(m) - (1.0 / m) * torch.ones((m, m))
+        K = rbf_kernel(x, x, sigma)
+        L = rbf_kernel(y, y, sigma)
+        HSIC = torch.trace(K @ H @ L @ H) / (m - 1) ** 2
+        return HSIC
